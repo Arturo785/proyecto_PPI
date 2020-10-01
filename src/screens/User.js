@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react'
-import { Button, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import {StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import AsyncStorage from "@react-native-community/async-storage"
 import Constants from "../utils/Constants"
+import { Button } from 'react-native-paper';
 
 export default function User(props) {
 
@@ -60,9 +61,13 @@ export default function User(props) {
             <Text style={styles.welcomeText}>Error inesperado</Text>
             }
 
-         <TouchableOpacity onPress={signOut} delayPressIn={0}>
+         {/* <TouchableOpacity onPress={signOut} delayPressIn={0}>
              <Text style={styles.textButton}> Log-out  </Text>
-         </TouchableOpacity>
+         </TouchableOpacity> */}
+
+            <Button mode="outlined" onPress={signOut} marginTop={20}>
+                Log-out
+            </Button>
 
         </View>
     )

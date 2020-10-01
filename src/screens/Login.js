@@ -1,7 +1,8 @@
 import React, {useState} from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, Image, KeyboardAvoidingView} from 'react-native'
+import { StyleSheet, Text, View, Image, KeyboardAvoidingView} from 'react-native'
 import AsyncStorage from "@react-native-community/async-storage"
 import Constants from "../utils/Constants"
+import { Button, TextInput, HelperText } from 'react-native-paper';
 
 
 export default function Login(props) {
@@ -10,6 +11,11 @@ export default function Login(props) {
 
     const [code, setCode] = useState(null)
     const [nip, setNip] = useState(null)
+    const [errorCode, setErrorCode] = useState(false)
+    const [errorNip, setErrorNip] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
+    const [invalidData, setInvalidData] = useState(false)
+
 
 
     const getDataFromSIIAU = async () => {
@@ -45,13 +51,26 @@ export default function Login(props) {
       }
 
     const logIn = () =>{
+        setErrorNip(false)
+        setErrorCode(false)
+        setIsLoading(true)
+        setInvalidData(false)
+
         console.log("picado")
         if(code && nip){
             getDataFromSIIAU().then(function(text){
+                setIsLoading(false)
                 saveData(text)
             });
         }
         else{
+            if(!code){
+                setErrorCode(true)
+            }
+            if(!nip){
+                setErrorNip(true)
+            }
+            setIsLoading(false)
             console.log("datos invalidos")
         }
     } 
@@ -59,6 +78,7 @@ export default function Login(props) {
     const saveData = (data) =>{
         if(data === "0"){
             console.log("no se pudo iniciar sesion")
+            setInvalidData(true)
         }
         else{
             storeData(data).then(() =>{
@@ -75,24 +95,57 @@ export default function Login(props) {
         <View style={styles.background}>
 
             <Image style={styles.logo} source={require("../assets/udg.png")}></Image>
+
+
+            <View style={styles.containerInputs}>
         
             <TextInput
-             style={[styles.input]}
-             placeholder="Code"
-             placeholderTextColor="#969696"
-             onChange={e => setCode(e.nativeEvent.text)}
-         />
-         <TextInput
-             style={[styles.input]}
-             placeholder="NIP"
-             placeholderTextColor="#969696"
-             secureTextEntry={true}
-             onChange={e => setNip(e.nativeEvent.text)}
-         />
+                mode="outlined"
+                placeholder="Code"
+                style={styles.custom}
+                onChange={e => setCode(e.nativeEvent.text)}
+                >
+            </TextInput>
+            <HelperText 
+                    visible={errorCode}
+                    type="error" 
+                >
+                    Please enter some data
+            </HelperText>
+
+            <TextInput
+                mode="outlined"
+                placeholder="NIP"
+                style={styles.custom}
+                secureTextEntry={true}
+                onChange={e => setNip(e.nativeEvent.text)}
+                >
+            </TextInput>
+
+            <HelperText 
+                    visible={errorNip}
+                    type="error" 
+                >
+                    Please enter some data
+            </HelperText>
+
+            </View>
  
-         <TouchableOpacity onPress={logIn} delayPressIn={0}>
-             <Text style={styles.textButton}> Log-in  </Text>
-         </TouchableOpacity>
+
+          <Button 
+            mode="outlined"
+            onPress={logIn}
+            marginTop={60}
+            loading={isLoading}
+            >
+            Log-in
+          </Button>
+          <HelperText 
+                    visible={invalidData}
+                    type="error" 
+                >
+                    Invalid data
+            </HelperText>
 
          </View>
 
@@ -135,10 +188,23 @@ const styles = StyleSheet.create({
         backgroundColor : "#15212b",
         height: "100%",
         alignItems : "center",
-        justifyContent : "space-evenly",
+        //justifyContent : "space-evenly",
     },
     logo: {
         width: 350,
         height: 300,
+        marginTop : 20,
+        marginBottom : 10,
         resizeMode: 'contain'},
+    custom :{
+        backgroundColor : "#222831",
+        width : "70%",   
+    },
+    containerInputs:{
+        backgroundColor : "#15212b",
+        height: "25%",
+        width : "100%",
+        alignItems : "center",
+        justifyContent : "space-evenly",
+    },
 });
