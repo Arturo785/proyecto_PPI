@@ -20,22 +20,6 @@ export default function User(props) {
     }, [])
 
 
-   const removeValue = async () => {
-        try {
-          await AsyncStorage.removeItem(Constants.USER_KEY)
-          await AsyncStorage.removeItem(Constants.USER_LOGGED_KEY)
-        } catch(e) {
-          // remove error
-        }
-      
-        console.log('Done.')
-      }
-
-    const signOut = () =>{
-        removeValue().then(() =>{
-            setIsSignedIn(false)
-        }) 
-    }
 
     const getData = async () => {
         try {
@@ -61,13 +45,6 @@ export default function User(props) {
             <Text style={styles.welcomeText}>Error inesperado</Text>
             }
 
-         {/* <TouchableOpacity onPress={signOut} delayPressIn={0}>
-             <Text style={styles.textButton}> Log-out  </Text>
-         </TouchableOpacity> */}
-
-            <Button mode="outlined" onPress={signOut} marginTop={20}>
-                Log-out
-            </Button>
 
         </View>
     )
@@ -75,7 +52,7 @@ export default function User(props) {
 
 const styles = StyleSheet.create({
     background:{
-        backgroundColor : "#15212b",
+      //  backgroundColor : "#15212b",
         height: "100%",
         alignItems : "center",
     },

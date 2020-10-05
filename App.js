@@ -1,10 +1,19 @@
 import React, {useState, useEffect} from 'react'
 import { StyleSheet, Text, View, SafeAreaView,StatusBar} from 'react-native'
-import { NavigationContainer } from '@react-navigation/native';
 import AsyncStorage from "@react-native-community/async-storage"
 import Navigation from "./src/navigation/Navigation"
 import Constants from "./src/utils/Constants"
 import { Provider as PaperProvider } from 'react-native-paper';
+
+import {DarkTheme as DarkThemePaper, DefaultTheme as DefaultThemePaper} from "react-native-paper"
+import {NavigationContainer,DarkTheme as DarkThemeNavigation, DefaultTheme as DefaultThemeNavigation} from "@react-navigation/native"
+
+
+DarkThemePaper.colors.primary = "#1ae1f2"
+DarkThemePaper.colors.accent = "#c62a88"
+
+DarkThemeNavigation.colors.background = "#192734"
+DarkThemeNavigation.colors.card = "#1b2134"
 
 export default function App() {
 
@@ -37,14 +46,10 @@ export default function App() {
       }
 
     return (
-        <PaperProvider>
-            <NavigationContainer>
-           
-
+        <PaperProvider theme={DarkThemePaper}>
+            <NavigationContainer theme={DarkThemeNavigation}>
                 <StatusBar barStyle="light-content" backgroundColor="#6a51ae" />
                 <Navigation isSignedIn={isSignedIn} setIsSignedIn={setIsSignedIn}/>
-                                
-            
      </NavigationContainer>
     </PaperProvider>
     )

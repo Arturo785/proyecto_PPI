@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
         borderColor: '#940c0c',
       },
       background:{
-        backgroundColor : "#15212b",
+        //backgroundColor : "#15212b",
         height: "100%",
         alignItems : "center",
         //justifyContent : "space-evenly",
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
         width : "70%",   
     },
     containerInputs:{
-        backgroundColor : "#15212b",
+     //   backgroundColor : "#15212b",
         height: "25%",
         width : "100%",
         alignItems : "center",
