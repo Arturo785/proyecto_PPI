@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { View, StyleSheet, Image} from 'react-native';
 import {
   DrawerItem,
@@ -18,6 +18,8 @@ export default function DrawerContent(props){
 
     const {setIsSignedIn, navigation} = props
 
+
+    const [user, setUser] = useState("")
     const [isActive, setIsActive] = useState("user")
 
     const removeValue = async () => {
@@ -38,18 +40,53 @@ export default function DrawerContent(props){
     }
 
 
+    const getData = async () => {
+        try {
+         const value = await AsyncStorage.getItem(Constants.USER_KEY)
+          if(value !== null) {
+          //  console.log("Se recupero")
+            const splitValue = value.split(",")
+            global.userLogged = splitValue
+            return splitValue
+          }
+        } catch(e) {
+          console.log("no se pudo")
+        }
+      }
+
+
     const onChangeScreen = (screen) =>{
         setIsActive(screen)
         navigation.navigate(screen)
     }
 
+    useEffect(() => {
+
+        getData().then((response) =>{
+            setUser(response)
+        })
+        
+    }, [])
+
     return(
 
         <DrawerContentScrollView {...props} style={styles.drawerContent}>
 
-            <View style={styles.imageContainer}>    
-                <Title style={styles.title}>Welcome!</Title>
+            <View style={styles.imageContainer}> 
+
+            <Title style={styles.title}>Welcome!</Title>
+            
+            {user !== "" ?
+                <> 
+                    <Text style={styles.SubTitle}>{user[2]}</Text>
+                    <Text style={styles.SubTitle}>{user[1]}</Text>
+                </>
+                :
+                <Text style={styles.SubTitle}>Something went wrong</Text>
+            }
+        
                 <Image style={styles.logo} source={require("../assets/udg.png")} />
+
             </View>
 
 
@@ -84,11 +121,15 @@ const styles = StyleSheet.create({
       marginBottom : 10,
       marginStart : 5,
     },
+    SubTitle :{
+        color : "#fff",
+        fontSize : 12,
+    },
     logoutSection :{
         flexDirection : "column",
         justifyContent : "space-between",
         alignItems : "center",
-        paddingVertical : "150%",
+        paddingVertical : "30%",
     },
     logoutText :{
         fontWeight: 'bold',
