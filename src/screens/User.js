@@ -4,6 +4,9 @@ import { Button, HelperText, Title } from 'react-native-paper';
 import DateTimePickerModal from "react-native-modal-datetime-picker"
 import RNPickerSelect from "react-native-picker-select"
 import moment from "moment"
+import {saveAppointmentAPI} from "../api/ApiConnection"
+
+import Toast from 'react-native-simple-toast';
 
 export default function User(props) {
 
@@ -24,23 +27,57 @@ export default function User(props) {
      
     const handleConfirm = (value) => {
         const date = moment(value).format("LL")
-        const dateToSave = moment(value).format("l")
+        const dateToSave = moment(value).format("L")
        // console.log("A date has been picked: ", date);
-        setDateChosen(date)
+        setDateChosen(dateToSave)
         hideDatePicker();
     };
 
-    const saveDataFromAppointment = () =>{
-       const user = global.userLogged
-       console.log(user)
+    const formatAllData = () =>{
+        const user = global.userLogged
 
+        const dateSplit = dateChosen.split("/")
+
+        const dayToSend = dateSplit[1] 
+        const monthToSend = dateSplit[0] 
+        const hourToSend = `${hourChosen}:${minuteChosen}`
+        const nipToSend = user[1]
+        const nameToSend = user[2]
+        const careerToSend = user[4]
+
+        const form = new FormData();
+        form.append('day_week', dayToSend);
+        form.append('month', monthToSend);
+        form.append('day', dayToSend);
+        form.append('hour', hourToSend);
+        form.append('nip', nipToSend);
+        form.append('name', nameToSend);
+        form.append('career', careerToSend);
+
+        return form
+    }
+
+    const saveDataFromAppointment = () =>{
+ 
        if(dateChosen && hourChosen && minuteChosen !== null ){
+           //Everything was ok
            setAllCorrect(false)
-            const allData = `${dateChosen} ${hourChosen} ${minuteChosen} ${user[1]} ${user[3]} ${user[4]} `
+
+            const allData = formatAllData();
             setDataToSend(allData)
-            console.log(allData)
+
+            saveAppointmentAPI(allData).then((response) =>{
+                console.log(response)
+                if(response === 1){
+                    Toast.show('Appointment generated.', Toast.LONG);
+                }
+                else{
+                    Toast.show('Something went wrong.', Toast.LONG);
+                }
+            })
        }
        else{
+           //There was some error
            setAllCorrect(true)
        }
 
@@ -124,10 +161,6 @@ export default function User(props) {
                 >
                     Please fill all the data
             </HelperText>
-
-            {dataToSend &&  
-                <Text style={styles.dateText}>Data: {dataToSend}</Text>
-            }
 
             <DateTimePickerModal 
                 isVisible={isPickerVisible}
