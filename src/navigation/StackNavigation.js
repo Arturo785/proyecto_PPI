@@ -2,6 +2,7 @@ import React from 'react'
 import {createStackNavigator} from "@react-navigation/stack"
 import Login from "../screens/Login"
 import User from "../screens/User"
+import SeeDates from "../screens/SeeDates"
 import Constants from "../utils/Constants"
 import {IconButton} from "react-native-paper"
 
@@ -33,6 +34,17 @@ export default function StackNavigation(props) {
                     {(props) => <User {...props} setIsSignedIn={setIsSignedIn} />} 
 
                 </stack.Screen>
+
+
+                <stack.Screen 
+                    name={Constants.NAVIGATION_DATES}
+                    component={SeeDates}
+                    options={
+                        {title:"Dates",
+                        headerLeft: () => buttonLeft(),
+                        }
+                    }
+                />
                     
             </stack.Navigator>
     )

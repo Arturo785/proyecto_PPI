@@ -26,3 +26,18 @@ export function saveAppointmentAPI(dataSent){
         console.error("SALIO MAL");
     }
 }
+
+export function getAllAppointmentsAPI(code){
+    const url = `${BASE_URL}/verCitas.php?nip=${code}`
+
+    try {
+       return axios.get(url)
+            .then((result) =>{
+                return result.data
+            })
+    }
+    catch(error){
+        console.error(error);
+        console.error("SALIO MAL");
+    }
+}

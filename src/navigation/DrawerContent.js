@@ -91,12 +91,21 @@ export default function DrawerContent(props){
 
 
             <Drawer.Section>
+
                 <Drawer.Item
                     label="User"
                     icon="home"
                     active={isActive === Constants.NAVIGATION_USER}
                     onPress={() => onChangeScreen(Constants.NAVIGATION_USER)}
                 />
+
+                <Drawer.Item
+                    label="See dates"
+                    icon="calendar"
+                    active={isActive === Constants.NAVIGATION_DATES}
+                    onPress={() => onChangeScreen(Constants.NAVIGATION_DATES)}
+                />
+
             </Drawer.Section>
 
             <View style={styles.logoutSection}>
@@ -142,6 +151,7 @@ const styles = StyleSheet.create({
         marginTop : 10,
         marginBottom : 10,
         resizeMode: 'contain'},
+        
     imageContainer : {
         flexDirection : "column",
         justifyContent : "space-between",
