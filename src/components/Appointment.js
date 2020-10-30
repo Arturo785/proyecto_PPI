@@ -3,7 +3,10 @@ import { StyleSheet, View, Image } from 'react-native'
 import {Text, IconButton} from 'react-native-paper';
 export default function Appointment(props) {
 
-    const {allData} = props
+    const {allData, deleteAppointment} = props
+
+
+    
 
 
     return (
@@ -26,7 +29,7 @@ export default function Appointment(props) {
                     <View style={styles.iconContainer}>
 
                         <IconButton  icon="delete" title="Sign-out" size={30} style={{backgroundColor : "#214252"}} color={"#aa3a3a"}
-                                onPress={() => console.log("delete")} 
+                                onPress={() => deleteAppointment(allData)} 
                         />
 
                     </View>
