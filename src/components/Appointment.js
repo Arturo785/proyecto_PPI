@@ -15,23 +15,27 @@ export default function Appointment(props) {
 
     return (
 
-        <TouchableOpacity onPress={onNavigation}>
 
         <View style={styles.container}>
 
+
                 <View style={styles.innerContainer}>
 
-                    <View style={styles.imageContainer}>
+                    <TouchableOpacity onPress={onNavigation}style={styles.innerContainer} >
 
-                        <Image style={styles.logo}  source={require("../assets/udg.png")}></Image>
+                        <View style={styles.imageContainer}>
 
-                    </View>
+                            <Image style={styles.logo}  source={require("../assets/udg.png")}></Image>
 
-                    <View style={styles.TextContainer}>
-                        <Text style={styles.textDate}> Day: {allData.day} </Text>
-                        <Text style={styles.textDate}> Hour: {allData.hour} </Text>
-                        <Text style={styles.textDate}> Month: {allData.month} </Text>
-                    </View>
+                        </View>
+
+                        <View style={styles.TextContainer}>
+                            <Text style={styles.textDate}> Day: {allData.day} </Text>
+                            <Text style={styles.textDate}> Hour: {allData.hour} </Text>
+                            <Text style={styles.textDate}> Month: {allData.month} </Text>
+                        </View>
+
+                    </TouchableOpacity>
 
                     <View style={styles.iconContainer}>
 
@@ -45,7 +49,6 @@ export default function Appointment(props) {
 
         </View>
 
-        </TouchableOpacity>
     )
 }
 
@@ -90,5 +93,6 @@ const styles = StyleSheet.create({
     imageContainer : {
         flexDirection : "column",
         alignItems : "center",
+        marginRight : 30
     }
 })
