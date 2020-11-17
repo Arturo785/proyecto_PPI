@@ -7,8 +7,11 @@ import {getAllAppointmentsAPI, deleteAppointmentAPI} from "../api/ApiConnection"
 import Appointment from '../components/Appointment'
 import Toast from 'react-native-simple-toast';
 
-export default function SeeDates() {
+export default function SeeDates(props) {
 
+    const {navigation} = props
+
+    
 
     useEffect(() => {
         const code = global.userLogged[1]
@@ -19,6 +22,7 @@ export default function SeeDates() {
     }, [])
 
     const [allAppointments, setAllAppointments] = useState([])
+    const [refresh, setRefresh] = useState(false)
 
 
     const deleteFromResults = (dataToDelete) => {
@@ -26,6 +30,15 @@ export default function SeeDates() {
         const newData = oldData.filter(item => item !== dataToDelete);
 
         setAllAppointments(newData)
+    }
+
+    const myTest = (oldOne,newData) => {
+        const code = global.userLogged[1]
+        getAllAppointmentsAPI(code).then((result) =>{
+          //  console.log(result)
+            setAllAppointments(result)
+            console.log("refresehd")
+        })
     }
 
 
@@ -76,7 +89,7 @@ export default function SeeDates() {
                 ItemSeparatorComponent={() => <Text> ‧ </Text>}
 
                 renderItem={({item}) => (
-                    <Appointment allData={item} deleteAppointment={deleteAppointment} />
+                    <Appointment allData={item} deleteAppointment={deleteAppointment} navigation={navigation} setRefresh={myTest} />
                 )}
             />
 

@@ -4,6 +4,7 @@ export default{
     NAVIGATION_LOGIN : "login",
     NAVIGATION_USER : "user",
     NAVIGATION_DATES: "dates",
+    NAVIGATION_UPDATE: "dates_update",
 };
 
 export const BASE_URL = "https://jorgeppi.000webhostapp.com/"

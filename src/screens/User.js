@@ -23,7 +23,8 @@ export default function User(props) {
 
     const hideDatePicker = () => {
         setIsPickerVisible(false);
-      };
+        
+    };
      
     const handleConfirm = (value) => {
         const date = moment(value).format("LL")

@@ -1,15 +1,22 @@
 import React from 'react'
 import { StyleSheet, View, Image } from 'react-native'
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import {Text, IconButton} from 'react-native-paper';
+import Constants from '../utils/Constants';
 export default function Appointment(props) {
 
-    const {allData, deleteAppointment} = props
+    const {allData, deleteAppointment, navigation, setRefresh} = props
 
+    const onNavigation = () =>{
+        navigation.navigate(Constants.NAVIGATION_UPDATE, { allData, setRefresh })
+    }
 
-    
 
 
     return (
+
+        <TouchableOpacity onPress={onNavigation}>
+
         <View style={styles.container}>
 
                 <View style={styles.innerContainer}>
@@ -37,6 +44,8 @@ export default function Appointment(props) {
                 </View>
 
         </View>
+
+        </TouchableOpacity>
     )
 }
 
