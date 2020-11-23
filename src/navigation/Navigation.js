@@ -2,6 +2,8 @@ import React from 'react'
 import { View, Text,StyleSheet } from 'react-native'
 import {createStackNavigator} from "@react-navigation/stack"
 import Login from "../screens/Login"
+import LoginAdmin from "../screens/LoginAdmin"
+import CreateAdmin from "../screens/CreateAdmin"
 import StackNavigation from "./StackNavigation"
 import Constants from "../utils/Constants"
 import {createDrawerNavigator} from "@react-navigation/drawer"
@@ -49,6 +51,31 @@ export default function Navigation(props){
                 {(props) => <Login {...props} setIsSignedIn={setIsSignedIn} />} 
                 
             </stack.Screen>
+
+            <stack.Screen
+                name={Constants.NAVIGATION_LOGIN_ADMIN}
+               // component={Login} the way below is a way to send props and also say which component to render
+               options={{
+                title: 'Login admin',
+                headerTitleStyle: {
+                  fontWeight: 'bold',
+                },
+              }}>
+                {(props) => <LoginAdmin {...props} setIsSignedIn={setIsSignedIn} />} 
+                
+            </stack.Screen>
+
+            <stack.Screen
+                    name= {Constants.CREATE_ADMIN}
+                    component = {CreateAdmin}
+                    options={{
+                        title: 'Create Admin',
+                        headerTitleStyle: {
+                            fontWeight: 'bold',
+                          },
+                    }}>
+
+                </stack.Screen>
 
             </stack.Navigator>
           )

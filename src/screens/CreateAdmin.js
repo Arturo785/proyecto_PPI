@@ -1,13 +1,13 @@
 import React, {useState} from 'react'
 import { StyleSheet, Text, View, Image, KeyboardAvoidingView} from 'react-native'
-import AsyncStorage from "@react-native-community/async-storage"
-import Constants from "../utils/Constants"
 import { Button, TextInput, HelperText } from 'react-native-paper';
+import {createAdminAPI} from "../api/ApiConnection"
+import Toast from 'react-native-simple-toast';
+
+export default function CreateAdmin(props) {
 
 
-export default function Login(props) {
-
-    const {setIsSignedIn, navigation} = props
+    const {navigation} = props
 
     const [code, setCode] = useState(null)
     const [nip, setNip] = useState(null)
@@ -15,44 +15,6 @@ export default function Login(props) {
     const [errorNip, setErrorNip] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [invalidData, setInvalidData] = useState(false)
-
-
-
-    const getDataFromSIIAU = async () => {
-        const route = `https://cuceimobile.tech/Escuela/datosudeg.php?codigo=${code}&nip=${nip}`
-
-        // waits until the request completes...
-        try {
-            const response = await fetch(route,{
-                method : "GET"
-            });
-
-            if(response.ok){
-                console.log("200")
-                const text = await response.text();
-                return text
-            }
-            
-            return null
-
-        } catch (error) {
-          console.error(error);
-        }
-
-      };
-
-      const navigateToAdmin = () => {
-        navigation.navigate(Constants.NAVIGATION_LOGIN_ADMIN)
-      }
-
-    const storeData = async (value) => {
-        try {
-          await AsyncStorage.setItem(Constants.USER_KEY, value)
-          await AsyncStorage.setItem(Constants.USER_LOGGED_KEY, "true")
-        } catch (e) {
-          // saving error
-        }
-      }
 
     const logIn = () =>{
         setErrorNip(false)
@@ -62,10 +24,25 @@ export default function Login(props) {
 
         console.log("picado")
         if(code && nip){
-            getDataFromSIIAU().then(function(text){
+
+            const form = new FormData();
+            form.append('username', code);
+            form.append('password', nip);
+            form.append('isAdmin', 1);
+            //Do request
+            createAdminAPI(form).then(response =>{
+                console.log(response)
+                if(response === 1){
+                    Toast.show('Admin created.', Toast.LONG); 
+                    navigation.goBack()
+                }
+                else{
+                    Toast.show('Username unavailable.', Toast.LONG);
+                }
                 setIsLoading(false)
-                saveData(text)
-            });
+            })
+
+
         }
         else{
             if(!code){
@@ -77,21 +54,10 @@ export default function Login(props) {
             setIsLoading(false)
             console.log("datos invalidos")
         }
-    } 
-
-    const saveData = (data) =>{
-        if(data === "0"){
-            console.log("no se pudo iniciar sesion")
-            setInvalidData(true)
-        }
-        else{
-            storeData(data).then(() =>{
-                setIsSignedIn(true)
-            })
-        }
     }
 
     return (
+
         <KeyboardAvoidingView
          behavior={Platform.OS == "ios" ? "padding" : "height"}
          >
@@ -105,7 +71,7 @@ export default function Login(props) {
         
             <TextInput
                 mode="outlined"
-                placeholder="Code"
+                placeholder="Username"
                 style={styles.custom}
                 onChange={e => setCode(e.nativeEvent.text)}
                 >
@@ -119,9 +85,10 @@ export default function Login(props) {
 
             <TextInput
                 mode="outlined"
-                placeholder="NIP"
+                placeholder="Password"
                 style={styles.custom}
                 secureTextEntry={true}
+                maxLength={12}
                 onChange={e => setNip(e.nativeEvent.text)}
                 >
             </TextInput>
@@ -138,11 +105,11 @@ export default function Login(props) {
 
           <Button 
             mode="outlined"
-            onPress={logIn}
             marginTop={60}
             loading={isLoading}
+            onPress={logIn}
             >
-            Log-in
+            Create
           </Button>
           <HelperText 
                     visible={invalidData}
@@ -151,19 +118,12 @@ export default function Login(props) {
                     Invalid data
             </HelperText>
 
-            <Button 
-                mode="text"
-                onPress={navigateToAdmin}
-            >
-            Admin
-          </Button>
 
          </View>
 
         </KeyboardAvoidingView>
     )
 }
-
 
 const styles = StyleSheet.create({
     textButton :{
@@ -202,8 +162,8 @@ const styles = StyleSheet.create({
         //justifyContent : "space-evenly",
     },
     logo: {
-        width: 350,
-        height: 300,
+        width: 250,
+        height: 200,
         marginTop : 20,
         marginBottom : 10,
         resizeMode: 'contain'},
@@ -218,4 +178,4 @@ const styles = StyleSheet.create({
         alignItems : "center",
         justifyContent : "space-evenly",
     },
-});
+})

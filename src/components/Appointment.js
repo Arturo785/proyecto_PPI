@@ -11,7 +11,7 @@ export default function Appointment(props) {
         navigation.navigate(Constants.NAVIGATION_UPDATE, { allData, setRefresh })
     }
 
-
+    
 
     return (
 

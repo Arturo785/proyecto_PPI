@@ -78,3 +78,43 @@ export function updateAppointmentAPI(dataToSend){
     }
 
 }
+
+export function createAdminAPI(dataToSend){
+    const url = `${BASE_URL}/AddAdmin.php?`
+
+    try {
+        return axios({
+            url : url,
+            method : "POST",
+            data : dataToSend,
+        })
+        .then((result) =>{
+            return result.data
+        })
+    }
+    catch(error){
+        console.error(error);
+        console.error("SALIO MAL");
+    }
+
+}
+
+export function verifyAdminAPI(dataToSend){
+    const url = `${BASE_URL}/adminLogin.php?`
+
+    try {
+        return axios({
+            url : url,
+            method : "POST",
+            data : dataToSend,
+        })
+        .then((result) =>{
+            return result.data
+        })
+    }
+    catch(error){
+        console.error(error);
+        console.error("SALIO MAL");
+    }
+
+}

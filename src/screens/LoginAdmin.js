@@ -3,9 +3,11 @@ import { StyleSheet, Text, View, Image, KeyboardAvoidingView} from 'react-native
 import AsyncStorage from "@react-native-community/async-storage"
 import Constants from "../utils/Constants"
 import { Button, TextInput, HelperText } from 'react-native-paper';
+import {verifyAdminAPI} from "../api/ApiConnection"
+import Toast from 'react-native-simple-toast';
 
 
-export default function Login(props) {
+export default function LoginAdmin(props) {
 
     const {setIsSignedIn, navigation} = props
 
@@ -16,43 +18,9 @@ export default function Login(props) {
     const [isLoading, setIsLoading] = useState(false)
     const [invalidData, setInvalidData] = useState(false)
 
-
-
-    const getDataFromSIIAU = async () => {
-        const route = `https://cuceimobile.tech/Escuela/datosudeg.php?codigo=${code}&nip=${nip}`
-
-        // waits until the request completes...
-        try {
-            const response = await fetch(route,{
-                method : "GET"
-            });
-
-            if(response.ok){
-                console.log("200")
-                const text = await response.text();
-                return text
-            }
-            
-            return null
-
-        } catch (error) {
-          console.error(error);
-        }
-
-      };
-
-      const navigateToAdmin = () => {
-        navigation.navigate(Constants.NAVIGATION_LOGIN_ADMIN)
-      }
-
-    const storeData = async (value) => {
-        try {
-          await AsyncStorage.setItem(Constants.USER_KEY, value)
-          await AsyncStorage.setItem(Constants.USER_LOGGED_KEY, "true")
-        } catch (e) {
-          // saving error
-        }
-      }
+    const navigateCreateAdmin = () => {
+        navigation.navigate(Constants.CREATE_ADMIN)
+    }
 
     const logIn = () =>{
         setErrorNip(false)
@@ -62,10 +30,23 @@ export default function Login(props) {
 
         console.log("picado")
         if(code && nip){
-            getDataFromSIIAU().then(function(text){
+
+            const form = new FormData();
+            form.append('username', code);
+            form.append('password', nip);
+            //Do request
+            verifyAdminAPI(form).then(response =>{
+                console.log(response)
+                if(response === 1){
+                    Toast.show('Logged.', Toast.LONG); 
+                }
+                else{
+                    Toast.show('error loggin.', Toast.LONG);
+                }
                 setIsLoading(false)
-                saveData(text)
-            });
+            })
+
+
         }
         else{
             if(!code){
@@ -77,19 +58,8 @@ export default function Login(props) {
             setIsLoading(false)
             console.log("datos invalidos")
         }
-    } 
-
-    const saveData = (data) =>{
-        if(data === "0"){
-            console.log("no se pudo iniciar sesion")
-            setInvalidData(true)
-        }
-        else{
-            storeData(data).then(() =>{
-                setIsSignedIn(true)
-            })
-        }
     }
+
 
     return (
         <KeyboardAvoidingView
@@ -138,8 +108,8 @@ export default function Login(props) {
 
           <Button 
             mode="outlined"
-            onPress={logIn}
             marginTop={60}
+            onPress={logIn}
             loading={isLoading}
             >
             Log-in
@@ -153,9 +123,9 @@ export default function Login(props) {
 
             <Button 
                 mode="text"
-                onPress={navigateToAdmin}
+                onPress={navigateCreateAdmin}
             >
-            Admin
+            create admin
           </Button>
 
          </View>
@@ -163,7 +133,6 @@ export default function Login(props) {
         </KeyboardAvoidingView>
     )
 }
-
 
 const styles = StyleSheet.create({
     textButton :{
@@ -218,4 +187,4 @@ const styles = StyleSheet.create({
         alignItems : "center",
         justifyContent : "space-evenly",
     },
-});
+})
