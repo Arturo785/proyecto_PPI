@@ -18,6 +18,7 @@ DarkThemeNavigation.colors.card = "#1b2134"
 export default function App() {
 
     const [isSignedIn, setIsSignedIn] = useState(false)
+    const [isAdmin, setIsAdmin] = useState(false)
 
     useEffect(() => {
         getData().then((data) =>{
@@ -28,7 +29,11 @@ export default function App() {
            }
            else{
                console.log( "user" +data)
-               setIsSignedIn(data)
+                getDataAdmin().then(adminData =>{
+                    setIsAdmin(adminData)
+                    setIsSignedIn(data)
+                })  
+               
            }
         })
     }, [])
@@ -45,11 +50,23 @@ export default function App() {
         }
       }
 
+      const getDataAdmin = async () => {
+        try {
+         const value = await AsyncStorage.getItem(Constants.USER_LOGGED_ADMIN_KEY)
+          if(value !== null) {
+            // value previously stored
+            return value
+          }
+        } catch(e) {
+          console.log("no se pudo admin")
+        }
+      }
+
     return (
         <PaperProvider theme={DarkThemePaper}>
             <NavigationContainer theme={DarkThemeNavigation}>
                 <StatusBar barStyle="light-content" backgroundColor="#6a51ae" />
-                <Navigation isSignedIn={isSignedIn} setIsSignedIn={setIsSignedIn}/>
+                <Navigation isSignedIn={isSignedIn} setIsSignedIn={setIsSignedIn} isAdmin={isAdmin} setIsAdmin={setIsAdmin} />
      </NavigationContainer>
     </PaperProvider>
     )

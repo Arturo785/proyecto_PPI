@@ -7,6 +7,8 @@ export default{
     NAVIGATION_DATES: "dates",
     NAVIGATION_UPDATE: "dates_update",
     CREATE_ADMIN : "create_admin",
+    NAVIGATION_ADMIN : "manage_admin",
+    USER_LOGGED_ADMIN_KEY : "logged_admin",
 };
 
 export const BASE_URL = "https://jorgeppi.000webhostapp.com/"

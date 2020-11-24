@@ -14,9 +14,9 @@ import AsyncStorage from "@react-native-community/async-storage"
 
 
 
-export default function DrawerContent(props){
+export default function DrawerContentAdmin(props){
 
-    const {setIsSignedIn, navigation} = props
+    const {setIsAdmin, navigation,setIsSignedIn} = props
 
 
     const [user, setUser] = useState("")
@@ -26,6 +26,7 @@ export default function DrawerContent(props){
         try {
           await AsyncStorage.removeItem(Constants.USER_KEY)
           await AsyncStorage.removeItem(Constants.USER_LOGGED_KEY)
+          await AsyncStorage.removeItem(Constants.USER_LOGGED_ADMIN_KEY)
         } catch(e) {
           // remove error
         }
@@ -36,6 +37,7 @@ export default function DrawerContent(props){
     const signOut = () =>{
         removeValue().then(() =>{
             setIsSignedIn(false)
+            setIsAdmin(false)
             NativeModules.DevSettings.reload();
         }) 
     }
@@ -46,9 +48,8 @@ export default function DrawerContent(props){
          const value = await AsyncStorage.getItem(Constants.USER_KEY)
           if(value !== null) {
           //  console.log("Se recupero")
-            const splitValue = value.split(",")
-            global.userLogged = splitValue
-            return splitValue
+            global.userLogged = value
+            return value
           }
         } catch(e) {
           console.log("no se pudo")
@@ -77,10 +78,9 @@ export default function DrawerContent(props){
 
             <Title style={styles.title}>Welcome!</Title>
             
-            {user !== undefined ?
+            {user !== "" ?
                 <> 
-                    <Text style={styles.SubTitle}>{user[2]}</Text>
-                    <Text style={styles.SubTitle}>{user[1]}</Text>
+                    <Text style={styles.SubTitle}>{user}</Text>
                 </>
                 :
                 <Text style={styles.SubTitle}>Something went wrong</Text>
@@ -94,18 +94,12 @@ export default function DrawerContent(props){
             <Drawer.Section>
 
                 <Drawer.Item
-                    label="User"
+                    label="Home"
                     icon="home"
-                    active={isActive === Constants.NAVIGATION_USER}
-                    onPress={() => onChangeScreen(Constants.NAVIGATION_USER)}
+                    active={isActive === Constants.NAVIGATION_ADMIN}
+                    onPress={() => onChangeScreen(Constants.NAVIGATION_ADMIN)}
                 />
 
-                <Drawer.Item
-                    label="See dates"
-                    icon="calendar"
-                    active={isActive === Constants.NAVIGATION_DATES}
-                    onPress={() => onChangeScreen(Constants.NAVIGATION_DATES)}
-                />
 
             </Drawer.Section>
 

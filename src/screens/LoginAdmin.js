@@ -9,7 +9,7 @@ import Toast from 'react-native-simple-toast';
 
 export default function LoginAdmin(props) {
 
-    const {setIsSignedIn, navigation} = props
+    const {setIsSignedIn, navigation, setIsAdmin} = props
 
     const [code, setCode] = useState(null)
     const [nip, setNip] = useState(null)
@@ -39,6 +39,7 @@ export default function LoginAdmin(props) {
                 console.log(response)
                 if(response === 1){
                     Toast.show('Logged.', Toast.LONG); 
+                    saveData(code)
                 }
                 else{
                     Toast.show('error loggin.', Toast.LONG);
@@ -58,6 +59,23 @@ export default function LoginAdmin(props) {
             setIsLoading(false)
             console.log("datos invalidos")
         }
+    }
+
+    const storeData = async (value) => {
+        try {
+          await AsyncStorage.setItem(Constants.USER_KEY, value)
+          await AsyncStorage.setItem(Constants.USER_LOGGED_KEY, "true")
+          await AsyncStorage.setItem(Constants.USER_LOGGED_ADMIN_KEY, "true")
+        } catch (e) {
+          // saving error
+        }
+      }
+
+    const saveData = (data) =>{
+        storeData(data).then(() =>{
+            setIsAdmin(true)
+            setIsSignedIn(true)
+        })
     }
 
 

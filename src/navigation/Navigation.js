@@ -8,6 +8,8 @@ import StackNavigation from "./StackNavigation"
 import Constants from "../utils/Constants"
 import {createDrawerNavigator} from "@react-navigation/drawer"
 import DrawerContent from "../navigation/DrawerContent"
+import StackNavigatorAdmin from './StackNavigatorAdmin'
+import DrawerContentAdmin from './DrawerContentAdmin'
 
 
 const stack = createStackNavigator()
@@ -16,14 +18,17 @@ const Drawer = createDrawerNavigator();
 
 export default function Navigation(props){
 
-    const {isSignedIn, setIsSignedIn} = props
+    const {isSignedIn, setIsSignedIn, isAdmin, setIsAdmin} = props
    // console.log("props de navigation" + props)
+   console.log(isSignedIn)
 
     return (
         // if is signed in goes to one stack othewise goes to login
         isSignedIn ? (
 
-            <Drawer.Navigator initialRouteName="app" drawerContent={(props) => <DrawerContent {...props} setIsSignedIn={setIsSignedIn}/>}
+            !isAdmin ? (
+
+                <Drawer.Navigator initialRouteName="app" drawerContent={(props) => <DrawerContent {...props} setIsSignedIn={setIsSignedIn}/>}
             >
                                 
                 <Drawer.Screen
@@ -35,6 +40,24 @@ export default function Navigation(props){
                 </Drawer.Screen>
                  
             </Drawer.Navigator>
+
+            ) :
+            (
+                <Drawer.Navigator initialRouteName="app" drawerContent={(props) => <DrawerContentAdmin {...props} setIsAdmin={setIsAdmin} setIsSignedIn={setIsSignedIn}/>}
+                >
+                                    
+                    <Drawer.Screen
+                    name="app_admin"
+                    //component={UserStack}
+                    options={{title:"Home admin"}}
+                    >
+                    {(props) => <StackNavigatorAdmin {...props} />} 
+                    </Drawer.Screen>
+                     
+                </Drawer.Navigator> 
+            )
+
+            
 
           ) : (
             <stack.Navigator>
@@ -61,7 +84,7 @@ export default function Navigation(props){
                   fontWeight: 'bold',
                 },
               }}>
-                {(props) => <LoginAdmin {...props} setIsSignedIn={setIsSignedIn} />} 
+                {(props) => <LoginAdmin {...props} setIsSignedIn={setIsSignedIn} setIsAdmin={setIsAdmin} />} 
                 
             </stack.Screen>
 
