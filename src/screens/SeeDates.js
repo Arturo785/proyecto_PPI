@@ -89,7 +89,7 @@ export default function SeeDates(props) {
                 ItemSeparatorComponent={() => <Text> ‧ </Text>}
 
                 renderItem={({item}) => (
-                    <Appointment allData={item} deleteAppointment={deleteAppointment} navigation={navigation} setRefresh={myTest} />
+                    <Appointment allData={item} deleteAppointment={deleteAppointment} navigation={navigation} setRefresh={myTest} isAdmin={false}/>
                 )}
             />
 

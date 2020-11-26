@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { View, StyleSheet, Image, NativeModules} from 'react-native';
+import { View, StyleSheet, Image,} from 'react-native';
 import {
   DrawerItem,
   DrawerContentScrollView, DrawerItemList
@@ -11,6 +11,7 @@ import {
 
 import Constants from "../utils/Constants"
 import AsyncStorage from "@react-native-community/async-storage"
+import RNRestart from 'react-native-restart';
 
 
 
@@ -38,7 +39,7 @@ export default function DrawerContentAdmin(props){
         removeValue().then(() =>{
             setIsSignedIn(false)
             setIsAdmin(false)
-            NativeModules.DevSettings.reload();
+            RNRestart.Restart();
         }) 
     }
 
@@ -47,7 +48,7 @@ export default function DrawerContentAdmin(props){
         try {
          const value = await AsyncStorage.getItem(Constants.USER_KEY)
           if(value !== null) {
-          //  console.log("Se recupero")
+           console.log("Se recupero")
             global.userLogged = value
             return value
           }

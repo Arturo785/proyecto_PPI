@@ -5,13 +5,15 @@ import {Text, IconButton} from 'react-native-paper';
 import Constants from '../utils/Constants';
 export default function Appointment(props) {
 
-    const {allData, deleteAppointment, navigation, setRefresh} = props
+    const {allData, deleteAppointment, navigation, setRefresh, isAdmin} = props
 
     const onNavigation = () =>{
-        navigation.navigate(Constants.NAVIGATION_UPDATE, { allData, setRefresh })
+        if(!isAdmin){
+            navigation.navigate(Constants.NAVIGATION_UPDATE, { allData, setRefresh })
+        }
     }
 
-    
+
 
     return (
 

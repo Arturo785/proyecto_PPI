@@ -42,6 +42,21 @@ export function getAllAppointmentsAPI(code){
     }
 }
 
+export function getAllAppointmentsAdminAPI(career){
+    const url = `${BASE_URL}/SeeAllDates.php?career=${career}`
+
+    try {
+       return axios.get(url)
+            .then((result) =>{
+                return result.data
+            })
+    }
+    catch(error){
+        console.error(error);
+        console.error("SALIO MAL");
+    }
+}
+
 
 export function deleteAppointmentAPI(data){
     const url = `${BASE_URL}/bajasCitas.php?&month=${data.month}&day=${data.day}&hour=${data.hour}&nip=${data.nip}`

@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { View, StyleSheet, Image, NativeModules} from 'react-native';
+import { View, StyleSheet, Image} from 'react-native';
 import {
   DrawerItem,
   DrawerContentScrollView, DrawerItemList
@@ -11,6 +11,7 @@ import {
 
 import Constants from "../utils/Constants"
 import AsyncStorage from "@react-native-community/async-storage"
+import RNRestart from 'react-native-restart';
 
 
 
@@ -36,7 +37,7 @@ export default function DrawerContent(props){
     const signOut = () =>{
         removeValue().then(() =>{
             setIsSignedIn(false)
-            NativeModules.DevSettings.reload();
+            RNRestart.Restart();
         }) 
     }
 
