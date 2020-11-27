@@ -3,70 +3,57 @@ import { StyleSheet, Text, View, Image, KeyboardAvoidingView} from 'react-native
 import AsyncStorage from "@react-native-community/async-storage"
 import Constants from "../utils/Constants"
 import { Button, TextInput, HelperText } from 'react-native-paper';
+import {verifyAdminAPI} from "../api/ApiConnection"
+import Toast from 'react-native-simple-toast';
+import RNPickerSelect from "react-native-picker-select"
 import { ScrollView } from 'react-native-gesture-handler';
 
+export default function LoginAdmin(props) {
 
-export default function Login(props) {
-
-    const {setIsSignedIn, navigation} = props
+    const {setIsSignedIn, navigation, setIsAdmin} = props
 
     const [code, setCode] = useState(null)
     const [nip, setNip] = useState(null)
+    const [career, setcareer] = useState(null)
     const [errorCode, setErrorCode] = useState(false)
     const [errorNip, setErrorNip] = useState(false)
+    const [errorCareer, setErrorCareer] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [invalidData, setInvalidData] = useState(false)
 
-
-
-    const getDataFromSIIAU = async () => {
-        const route = `https://cuceimobile.tech/Escuela/datosudeg.php?codigo=${code}&nip=${nip}`
-
-        // waits until the request completes...
-        try {
-            const response = await fetch(route,{
-                method : "GET"
-            });
-
-            if(response.ok){
-                console.log("200")
-                const text = await response.text();
-                return text
-            }
-            
-            return null
-
-        } catch (error) {
-          console.error(error);
-        }
-
-      };
-
-      const navigateToAdmin = () => {
-        navigation.navigate(Constants.NAVIGATION_LOGIN_ADMIN)
-      }
-
-    const storeData = async (value) => {
-        try {
-          await AsyncStorage.setItem(Constants.USER_KEY, value)
-          await AsyncStorage.setItem(Constants.USER_LOGGED_KEY, "true")
-        } catch (e) {
-          // saving error
-        }
-      }
+    const navigateCreateAdmin = () => {
+        navigation.navigate(Constants.CREATE_ADMIN)
+    }
 
     const logIn = () =>{
         setErrorNip(false)
         setErrorCode(false)
         setIsLoading(true)
         setInvalidData(false)
+        setErrorCareer(false)
 
         console.log("picado")
-        if(code && nip){
-            getDataFromSIIAU().then(function(text){
+        if(code && nip && career){
+
+            const form = new FormData();
+            form.append('username', code);
+            form.append('password', nip);
+            form.append('career', career);
+            //Do request
+            verifyAdminAPI(form).then(response =>{
+                console.log(response)
+                if(response === 1){
+                    Toast.show('Logged.', Toast.LONG); 
+                    const dataToSave = `${code},${career}`
+                    saveData(dataToSave)
+                }
+                else{
+                    Toast.show('error loggin.', Toast.LONG);
+                }
                 setIsLoading(false)
-                saveData(text)
-            });
+            })
+
+
         }
         else{
             if(!code){
@@ -75,28 +62,36 @@ export default function Login(props) {
             if(!nip){
                 setErrorNip(true)
             }
+            if(!career){
+                setErrorCareer(true)
+            }
             setIsLoading(false)
             console.log("datos invalidos")
         }
-    } 
-
-    const saveData = (data) =>{
-        if(data === "0"){
-            console.log("no se pudo iniciar sesion")
-            setInvalidData(true)
-        }
-        else{
-            storeData(data).then(() =>{
-                setIsSignedIn(true)
-            })
-        }
     }
 
+    const storeData = async (value) => {
+        try {
+          await AsyncStorage.setItem(Constants.USER_KEY, value)
+          await AsyncStorage.setItem(Constants.USER_LOGGED_KEY, "true")
+          await AsyncStorage.setItem(Constants.USER_LOGGED_ADMIN_KEY, "true")
+        } catch (e) {
+          // saving error
+        }
+      }
+
+    const saveData = (data) =>{
+        storeData(data).then(() =>{
+            setIsAdmin(true)
+            setIsSignedIn(true)
+        })
+    }
+
+
     return (
+
         <ScrollView>
 
-
-        
         <KeyboardAvoidingView
          behavior={Platform.OS == "ios" ? "padding" : "height"}
          >
@@ -138,13 +133,38 @@ export default function Login(props) {
                     Please enter some data
             </HelperText>
 
+            
+            <RNPickerSelect
+                    useNativeAndroidPickerStyle={false}
+                    style={pickerSelectStyles}
+                    onValueChange={(value) => setcareer(value)}
+
+                    placeholder={{
+                        label:"Career",
+                        value: null
+                    }}
+
+                    items={[
+                    {label: "COM" , value: "COM"},
+                    {label: 'INNI', value: "INNI"},
+                    {label: 'QFB', value: "QFB"},
+                    ]}
+                />
+
+                <HelperText 
+                    visible={errorCareer}
+                    type="error" 
+                >
+                    Please enter some data
+            </HelperText>
+
             </View>
  
 
           <Button 
             mode="outlined"
-            onPress={logIn}
             marginTop={60}
+            onPress={logIn}
             loading={isLoading}
             >
             Log-in
@@ -158,18 +178,18 @@ export default function Login(props) {
 
             <Button 
                 mode="text"
-                onPress={navigateToAdmin}
+                onPress={navigateCreateAdmin}
             >
-            Admin
+            create admin
           </Button>
 
          </View>
 
         </KeyboardAvoidingView>
+
         </ScrollView>
     )
 }
-
 
 const styles = StyleSheet.create({
     textButton :{
@@ -216,6 +236,7 @@ const styles = StyleSheet.create({
     custom :{
         backgroundColor : "#222831",
         width : "70%",   
+        margin: 20
     },
     containerInputs:{
      //   backgroundColor : "#15212b",
@@ -224,4 +245,37 @@ const styles = StyleSheet.create({
         alignItems : "center",
         justifyContent : "space-evenly",
     },
+})
+
+const pickerSelectStyles = StyleSheet.create({
+    inputIOS:{
+        fontSize: 16,
+        paddingVertical: 12,
+        paddingHorizontal: 10,
+        borderWidth: 1,
+        borderRadius: 4,
+        color: "#fff",
+        paddingRight: 30,
+        backgroundColor: "#0f4c75",
+        width : 150,
+        marginLeft: -5,
+        marginRight: -5,
+        marginTop : 20,
+        marginBottom : 20,
+        marginEnd : 5,
+
+    },
+    inputAndroid: {
+        fontSize: 16,
+        paddingHorizontal: 10,
+        paddingVertical: 8,
+        borderWidth: 0.5,
+        borderRadius: 8,
+        color: '#fff',
+        width : 150,
+        backgroundColor: '#0f4c75',
+        marginTop : 20,
+        marginBottom : 20,
+        marginEnd : 5,
+      },
 });
