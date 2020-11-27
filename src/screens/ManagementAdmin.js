@@ -3,7 +3,7 @@ import { StyleSheet, View, Alert, Text } from 'react-native'
 import { Title, Button} from 'react-native-paper';
 import { FlatList } from 'react-native-gesture-handler'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import {getAllAppointmentsAdminAPI, deleteAppointmentAPI} from "../api/ApiConnection"
+import {getAllAppointmentsAdminAPI, deleteAppointmentAdminAPI} from "../api/ApiConnection"
 import Appointment from '../components/Appointment'
 import Toast from 'react-native-simple-toast';
 import AsyncStorage from "@react-native-community/async-storage"
@@ -106,6 +106,9 @@ export default function ManagementAdmin(props) {
 
 
     const deleteAppointment = (appointmentData) =>{
+        if(appointmentData.deletedAdmin === "1"){
+            return
+        }
 
         Alert.alert(
             "Delete appointment",
@@ -119,8 +122,18 @@ export default function ManagementAdmin(props) {
                   text: "Delete",
                   style: "destructive",
                   onPress: () =>{
+                    const form = new FormData();
+                    form.append('day_week', appointmentData.day);
+                    form.append('month', appointmentData.month);
+                    form.append('day', appointmentData.day);
+                    form.append('hour', appointmentData.hour);
+                    form.append('nip', appointmentData.nip);
+                    form.append('name', appointmentData.name);
+                    form.append('career', appointmentData.career);
 
-                    deleteAppointmentAPI(appointmentData).then((result) =>{
+                    console.log(form)
+
+                    deleteAppointmentAdminAPI(form).then((result) =>{
                         if(result === 1){
                             Toast.show('Appointment deleted.', Toast.LONG);
                             deleteFromResults(appointmentData)
@@ -128,6 +141,7 @@ export default function ManagementAdmin(props) {
                         else{
                             Toast.show('Something went wrong', Toast.LONG);
                         }
+                        console.log(result)
                     })
                   }
               }

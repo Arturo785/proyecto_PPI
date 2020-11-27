@@ -133,3 +133,24 @@ export function verifyAdminAPI(dataToSend){
     }
 
 }
+
+
+export function deleteAppointmentAdminAPI(dataToSend){
+    const url = `${BASE_URL}/DeleteAdminDate.php?`
+
+    try {
+        return axios({
+            url : url,
+            method : "POST",
+            data : dataToSend,
+        })
+        .then((result) =>{
+            return result.data
+        })
+    }
+    catch(error){
+        console.error(error);
+        console.error("SALIO MAL");
+    }
+
+}

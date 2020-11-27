@@ -6,9 +6,11 @@ import Constants from '../utils/Constants';
 export default function Appointment(props) {
 
     const {allData, deleteAppointment, navigation, setRefresh, isAdmin} = props
+    const {deletedAdmin} = allData
+    const isDeleted = deletedAdmin === "1" // a boolean
 
     const onNavigation = () =>{
-        if(!isAdmin){
+        if(!isAdmin && !isDeleted){
             navigation.navigate(Constants.NAVIGATION_UPDATE, { allData, setRefresh })
         }
     }
@@ -18,7 +20,7 @@ export default function Appointment(props) {
     return (
 
 
-        <View style={styles.container}>
+        <View style={[styles.container, isDeleted ? styles.deleted : {}]}>
 
 
                 <View style={styles.innerContainer}>
@@ -96,5 +98,8 @@ const styles = StyleSheet.create({
         flexDirection : "column",
         alignItems : "center",
         marginRight : 30
+    },
+    deleted : {
+        backgroundColor : "#f05454"
     }
 })
