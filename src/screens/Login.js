@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Image, KeyboardAvoidingView} from 'react-native
 import AsyncStorage from "@react-native-community/async-storage"
 import Constants from "../utils/Constants"
 import { Button, TextInput, HelperText } from 'react-native-paper';
+import { ScrollView } from 'react-native-gesture-handler';
 
 
 export default function Login(props) {
@@ -92,6 +93,10 @@ export default function Login(props) {
     }
 
     return (
+        <ScrollView>
+
+
+        
         <KeyboardAvoidingView
          behavior={Platform.OS == "ios" ? "padding" : "height"}
          >
@@ -161,6 +166,7 @@ export default function Login(props) {
          </View>
 
         </KeyboardAvoidingView>
+        </ScrollView>
     )
 }
 

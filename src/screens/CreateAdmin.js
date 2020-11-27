@@ -4,6 +4,7 @@ import { Button, TextInput, HelperText } from 'react-native-paper';
 import {createAdminAPI} from "../api/ApiConnection"
 import Toast from 'react-native-simple-toast';
 import RNPickerSelect from "react-native-picker-select"
+import { ScrollView } from 'react-native-gesture-handler';
 
 export default function CreateAdmin(props) {
 
@@ -66,6 +67,8 @@ export default function CreateAdmin(props) {
     }
 
     return (
+
+        <ScrollView>
 
         <KeyboardAvoidingView
          behavior={Platform.OS == "ios" ? "padding" : "height"}
@@ -155,6 +158,8 @@ export default function CreateAdmin(props) {
          </View>
 
         </KeyboardAvoidingView>
+
+        </ScrollView>
     )
 }
 
